@@ -2,8 +2,8 @@
 User_Manual/
 *-*.txt
 styles.css
-Software_Requirement_Specification[!SRS_final.docx]*
-Software_Design_Document[!SDD_final.docx]*
+SRS_v[0-9]*
+SDD_v[0-9]*
 /**/README.md
 
 
