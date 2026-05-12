@@ -1,0 +1,125 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{letterpaper, margin=1in}
+\usepackage{enumitem}
+
+\title{\textbf{Snapshot Objectives}\\ \large EagleNav: Campus Navigation Using Augmented Reality}
+\author{Moh's Eagles}
+\date{May 15, 2026}
+
+\begin{document}
+
+\maketitle
+
+% --- Snapshot 1 ---
+\section*{Snapshot 1 (Start)}
+\textbf{Objective:} 
+The primary goal for Snapshot 1 is to establish the core infrastructure and initial application shells for the EagleNav navigation system. During the first phase, the team will focus on initializing the cross-platform mobile repository, establishing the cloud-based routing engine, and setting up the local storage for campus map assets to ensure the system can eventually handle accessible route generation.
+
+\textbf{Base Dependencies \& Frameworks:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Frontend Mobile App:} Flutter (Dart).
+    \item \textbf{Mapping \& Location Packages:} \texttt{flutter\_map}, \texttt{geolocator}, \texttt{flutter\_compass}.
+    \item \textbf{Backend Routing Service:} Valhalla Routing Engine (deployed via Docker).
+    \item \textbf{Cloud Infrastructure:} Google Cloud Platform (VM hosting) and Cloudflare R2 (object storage for \texttt{.osm.pbf} map files).
+    \item \textbf{Local Data Assets:} JSON (\texttt{buildings.json}) for campus entrance coordinates.
+\end{itemize}
+
+\textbf{Task Delegation:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Frontend Team:} Initialize the Flutter repository, configure the NavigationController and LocationController to handle GPS streams, and build the initial UI shells for the Home/Map screen.
+    \item \textbf{Backend / Infrastructure Team:} Create the \texttt{docker-compose.yml} configuration for the Valhalla Routing Engine, provision the Cloudflare R2 bucket, and upload the initial OpenStreetMap data.
+    \item \textbf{Project Management:} Configure the Jira sprint board, define the first month's tickets, and complete the foundational drafting of the Software Design Document (SDD) and Software Requirement Specification (SRS).
+\end{itemize}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+% --- Snapshot 2 ---
+\section*{Snapshot 2 (Checkpoint 1)}
+\textbf{Objective:} 
+The primary objective for Snapshot 2 is to integrate the Campus Events Subsystem into the EagleNav application. This feature will allow students to seamlessly view, bookmark, and receive local push notifications for upcoming CSULA campus events, directly enhancing the app's utility beyond basic navigation.
+
+\textbf{New Tasks \& Delegation:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Frontend Team:} Build the EventsScreen UI tab. Implement HTTP request handlers to fetch and parse event data from the CSULA events website. 
+    \item \textbf{Backend/Logic Team:} Integrate SharedPreferences to allow users to save/bookmark events locally on their device. Configure the local notification scheduler to trigger alerts for bookmarked events.
+    \item \textbf{QA/Testing Team:} Draft and execute the initial TestRail test cases for the Snapshot 2 features.
+    \item \textbf{Project Management:} Update the Jira board with Sprint 2 tasks.
+\end{itemize}
+
+\textbf{New Dependencies \& Libraries:}
+\begin{itemize}[noitemsep]
+    \item \texttt{http} / \texttt{html} parsing libraries (for retrieving and structuring external event data).
+    \item \texttt{shared\_preferences} (for local, offline storage of bookmarked events).
+    \item \texttt{flutter\_local\_notifications} (for triggering on-device alerts).
+\end{itemize}
+
+\textbf{Documentation Updates:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Software Design Document (SDD):} Revise to Version 2.0. Add Section 5.5 to outline the Events Subsystem architecture.
+    \item \textbf{Software Requirements Specification (SRS):} Add functional requirement outlining the push notification rules for campus events.
+    \item \textbf{User Manual \& Design Spec:} Add the "Events" tab to the User Interface Flow Model.
+\end{itemize}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+% --- Snapshot 3 ---
+\section*{Snapshot 3 (Checkpoint 2)}
+\textbf{Objective:} 
+The primary objective for Snapshot 3 is to integrate the Computer Vision Subsystem to provide real-time, LiDAR-enhanced (and camera-based) obstacle awareness. This feature processes live camera input to detect surrounding objects and translates those detections into directional audio and haptic feedback, significantly increasing the app's safety and accessibility capabilities.
+
+\textbf{New Tasks \& Delegation:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Computer Vision Team:} Implement the ScanOverlay UI to capture device camera frames. Integrate the YOLO-based object detection and distance estimation models.
+    \item \textbf{Guidance/Audio Team:} Connect the categorized detection outputs to the Text-to-Speech Manager and Haptic Feedback services to evaluate urgency and trigger real-time cues.
+    \item \textbf{QA/Testing Team:} Create and execute TestRail cases to evaluate object detection latency and verify distance estimation accuracy.
+    \item \textbf{Project Management:} Create Sprint 3 Jira tickets and update workflows for the computer vision feature.
+\end{itemize}
+
+\textbf{New Dependencies \& Libraries:}
+\begin{itemize}[noitemsep]
+    \item \texttt{tflite} (TensorFlow Lite): Required for running the distance estimation and object detection models locally on Android devices.
+    \item \texttt{camera} plugins: To access and process the live device camera feed.
+    \item \texttt{flutter\_tts} and haptic/vibration APIs: For generating spoken instructions and patterned feedback.
+\end{itemize}
+
+\textbf{Documentation Updates:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Software Design Document (SDD):} Revise to Version 3.0. Add the Computer Vision Subsystem to System Architecture.
+    \item \textbf{Software Requirements Specification (SRS):} Add functional requirements for camera permissions and real-time feedback latency constraints.
+\end{itemize}
+
+\vspace{0.5cm}
+\hrule
+\vspace{0.5cm}
+
+% --- Snapshot 4 ---
+\section*{Snapshot 4 (Original Due Date)}
+\textbf{Objective:} 
+The primary objective for Snapshot 4 is to apply finishing touches to the EagleNav application by integrating the Landmark Service for on-demand spatial awareness, executing the final testing and reflection phases, and formalizing the "Future Work" scope for the project.
+
+\textbf{Finishing Touches (New Feature):}
+\begin{itemize}[noitemsep]
+    \item \textbf{Landmark Service:} Integration of a user-initiated feature that allows students to tap a button at any time (even without an active route) to hear a body-relative spatial audio cue describing nearby buildings.
+\end{itemize}
+
+\textbf{Future Work:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Dynamic Construction Routing:} Integrating a live data feed to automatically update the \texttt{buildings.geojson} map, routing users around temporary campus construction or broken elevators.
+    \item \textbf{Indoor Floorplan Mapping:} Expanding the Valhalla routing engine beyond exterior entrances to include turn-by-turn indoor navigation.
+    \item \textbf{Saved Routes:} Fully implementing the \texttt{bookmarks.json} database design to allow users to save frequent daily class routes for immediate offline access.
+\end{itemize}
+
+\textbf{Documentation Updates \& Final Tasks:}
+\begin{itemize}[noitemsep]
+    \item \textbf{Software Design Document (SDD):} Revise to Version 4.0. Add Landmark Service Subsystem.
+    \item \textbf{TestRail:} Submit the final Snapshot 4 reflection document, summarizing the overall test runs, identified bugs, and system stability.
+    \item \textbf{GitHub/Jira:} Ensure all \texttt{.tex} files are compiled, finalized, and pushed to the master repository alongside the \texttt{docker-compose.yml} file. Validate that the User Manual includes the direct link to the Jira sprint board.
+\end{itemize}
+
+\end{document}
