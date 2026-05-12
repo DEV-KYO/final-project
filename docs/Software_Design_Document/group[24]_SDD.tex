@@ -1,0 +1,99 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{letterpaper, margin=1in}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+\begin{document}
+
+% --- 1. Cover Page ---
+\begin{titlepage}
+    \centering
+    \vspace*{2in}
+    {\Huge \textbf{Software Design Document (SDD)}}\\[1cm]
+    {\Large \textbf{EagleNav: Campus Navigation System}}\\[2cm]
+    {\large \textbf{Team Name:} Moh's Eagles}\\[0.5cm]
+    {\large \textbf{Date:} May 15, 2026}\\[2cm]
+    \vfill
+\end{titlepage}
+
+% --- 2. Table of Contents ---
+\tableofcontents
+\newpage
+
+% --- 3. Version Description ---
+\section*{Version Description}
+\addcontentsline{toc}{section}{Version Description}
+\begin{table}[h]
+    \centering
+    \begin{tabularx}{\textwidth}{|c|X|c|}
+        \hline
+        \textbf{Version Number} & \textbf{Description of what was added} & \textbf{Date Added} \\ \hline
+        0.0 & Initial Documentation Outline & Feb 13, 2026\\ \hline
+        1.0 & Initial architecture, Core Map rendering, and Valhalla Routing Engine setup. & April 27, 2026 \\ \hline
+        2.0 & Added Campus Events Subsystem and local push notifications. & May 4, 2026 \\ \hline
+        3.0 & Integrated Computer Vision Subsystem (YOLO/TFLite) for obstacle awareness. & May 11, 2026 \\ \hline
+        4.0 & Finalized Landmark Service, body-relative audio cues, and final formatting. & May 15, 2026 \\ \hline
+    \end{tabularx}
+\end{table}
+
+\newpage
+
+% --- 4. Sections ---
+
+\section{Introduction}
+
+\subsection{Purpose of the document}
+This Software Design Document (SDD) outlines the technical architecture, component breakdown, and implementation strategy for the EagleNav navigation platform. It serves as the primary blueprint for the software's structural design across all four project snapshots.
+
+\subsection{Intended audience}
+This document is intended for the project development team, course instructors, and potential future maintainers to understand how the system's client-side application communicates with its cloud-based routing services and local machine-learning models.
+
+\subsection{Overview of the system}
+EagleNav is an augmented reality navigation application tailored for the CSULA campus. The system utilizes a mobile frontend built in Flutter to render campus maps, communicating with a containerized Valhalla routing engine to calculate pedestrian routes. It includes an Events Subsystem for campus notifications, a Computer Vision Subsystem for LiDAR-enhanced obstacle detection, and a Landmark Service for on-demand spatial awareness.
+
+\section{System Architecture}
+
+\subsection{Workflow of the system}
+The user inputs a destination on the mobile application. The Location Controller retrieves GPS coordinates. The Routing Controller sends this origin and the destination to the routing engine. The engine calculates the path and returns a polyline to render on the map. Concurrently, the Camera Overlay processes live frames through the YOLO object detection model to trigger haptic/audio warnings, and the Events Screen fetches data from the external CSULA events website to store locally.
+
+\subsection{Breakdown of different components (server-side, client-side, etc.)}
+\begin{itemize}[noitemsep]
+    \item \textbf{Client-Side (Mobile App):} Built using Flutter (Dart). Handles the UI, renders \texttt{flutter\_map} tiles, processes TFLite computer vision models locally, manages \texttt{SharedPreferences} for bookmarks, and triggers Text-to-Speech (TTS) audio.
+    \item \textbf{Server-Side (Cloud Infrastructure):} A Dockerized instance of the Valhalla Routing Engine running on a cloud virtual machine processing the \texttt{.osm.pbf} CSULA map file. A secondary simulated Node.js backend fetches and structures HTML data from the CSULA events page.
+\end{itemize}
+
+\section{User Interface}
+
+\subsection{How to use the system}
+Users open the EagleNav application to the Home/Map view. They can use the search bar to query buildings, prompting the app to draw a navigation path to the closest accessible entrance. Users can toggle "AR Mode" to activate the camera for obstacle detection, navigate to the "Events" tab to view and bookmark campus activities, or press the "Landmark" button at any time to hear a description of nearby buildings relative to their physical orientation.
+
+\subsection{Database design and explanation}
+To protect user privacy and maximize offline capability, the system relies heavily on local storage. 
+\begin{itemize}[noitemsep]
+    \item \textbf{buildings.json:} A local asset file storing the latitude and longitude of ADA-accessible entrances.
+    \item \textbf{SharedPreferences:} A local key-value store used to persist bookmarked events and user accessibility profile settings (e.g., haptic intensity, voice toggle).
+\end{itemize}
+
+\subsection{Screenshots}
+\textit{(Screenshots of the Map View, AR Overlay, and Events Tab to be added in future maintenance updates.)}
+
+\section{Glossary}
+\begin{itemize}[noitemsep]
+    \item \textbf{API:} Application Programming Interface.
+    \item \textbf{OSM:} OpenStreetMap (the format used for campus map data).
+    \item \textbf{TTS:} Text-to-Speech engine.
+    \item \textbf{Valhalla:} The open-source pedestrian routing engine used on the server-side.
+    \item \textbf{YOLO:} "You Only Look Once", the machine learning model used for real-time obstacle detection.
+\end{itemize}
+
+\section{References}
+\begin{itemize}[noitemsep]
+    \item CSULA OpenStreetMap Campus Data extract.
+    \item Valhalla Routing API specifications (\url{https://valhalla.github.io/valhalla/}).
+    \item Flutter Framework Documentation (\url{https://flutter.dev/}).
+\end{itemize}
+
+\end{document}
