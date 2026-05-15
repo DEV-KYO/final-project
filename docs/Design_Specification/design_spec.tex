@@ -1,0 +1,59 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{letterpaper, margin=1in}
+\usepackage{enumitem}
+
+\title{\textbf{Design Specification}\\ \large EagleNav: Pages, Tools, and Dependencies}
+\author{Moh's Eagles}
+\date{May 15, 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+This Design Specification provides a granular breakdown of the EagleNav application's page structure, the software tools utilized for development, and the specific packages and dependencies required for both the mobile frontend and the Dockerized backend services.
+
+\section{Application Breakdown (Pages \& Features)}
+\begin{itemize}
+    \item \textbf{Home / Map Screen:} The default landing page. It features a search bar for campus buildings, an interactive 2D campus map, and a "Navigate" button. Once a route is active, this page displays the visual polyline path and the "distance to next turn" progress bar.
+    \item \textbf{AR / Scan Overlay Screen:} Accessed via a camera toggle, this page displays the device's live camera feed. It runs the computer vision object detection models to identify physical obstacles in real-time, overlaying bounding boxes and triggering accessibility alerts.
+    \item \textbf{Events Screen:} A dedicated tab that fetches and lists upcoming CSULA campus events. It includes a bookmark icon for each event to save it locally and trigger future push notifications.
+    \item \textbf{Settings \& Accessibility Profile:} A configuration page where users can define their routing preferences (e.g., "prefer ramps," "avoid stairs"), adjust text-to-speech volume, and modify UI contrast.
+\end{itemize}
+
+\section{Frontend Mobile Dependencies (Flutter)}
+The mobile client is built using the Flutter framework (Dart). The following packages are required for the application to function:
+\begin{itemize}[noitemsep]
+    \item \textbf{UI \& Mapping:} \texttt{flutter\_map} (for rendering the campus map tiles), \texttt{latlong2} (for coordinate math).
+    \item \textbf{Sensors \& Location:} \texttt{geolocator} (GPS streaming), \texttt{flutter\_compass} (magnetometer reading for body-relative direction).
+    \item \textbf{Machine Learning (AR):} \texttt{tflite} (TensorFlow Lite for running the \texttt{object\_detector.tflite} and \texttt{depth\_estimator.tflite} models on-device), \texttt{camera} (for hardware access).
+    \item \textbf{Feedback \& Storage:} \texttt{flutter\_tts} (Text-to-Speech), \texttt{shared\_preferences} (local database for events/settings), \texttt{flutter\_local\_notifications}.
+    \item \textbf{Networking:} \texttt{http} (for REST API calls to the Valhalla server and CSULA events page).
+\end{itemize}
+
+\section{Docker Containerization \& Backend Dependencies}
+To ensure a standardized infrastructure, the backend services are orchestrated using a \texttt{docker-compose.yml} file. The project requires the following images and libraries to be uploaded and run within the Docker environment:
+
+\subsection{Container 1: Valhalla Routing Engine}
+\begin{itemize}[noitemsep]
+    \item \textbf{Image:} \texttt{ghcr.io/gis-ops/docker-valhalla/valhalla:latest}
+    \item \textbf{Required Assets:} The \texttt{renum\_file.osm.pbf} (OpenStreetMap data for the CSULA campus) mounted as a volume.
+    \item \textbf{Role:} Exposes port 8002 to accept POST requests from the mobile app, returning JSON step-by-step pedestrian routing instructions based on accessibility parameters.
+\end{itemize}
+
+\subsection{Container 2: Node.js Backend API}
+\begin{itemize}[noitemsep]
+    \item \textbf{Image:} \texttt{node:18-alpine}
+    \item \textbf{Role:} Acts as a lightweight middleware server to handle data aggregation (like scraping/serving the campus events). 
+    \item \textbf{Node Dependencies (Package.json):}
+    \begin{itemize}
+        \item \texttt{express}: Minimalist web framework for routing.
+        \item \texttt{cors}: Cross-Origin Resource Sharing middleware.
+        \item \texttt{axios} / \texttt{cheerio}: For fetching and parsing external HTML event data.
+        \item \texttt{nodemon}: For automatic server restarts during development.
+    \end{itemize}
+\end{itemize}
+
+\end{document}
