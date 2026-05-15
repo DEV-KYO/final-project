@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # 1. Valhalla Routing Engine (Generates the accessible paths)
+  valhalla-routing:
+    image: ghcr.io/gis-ops/docker-valhalla/valhalla:latest
+    container_name: eaglenav_valhalla
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./map_data:/custom_files
+    environment:
+      - serve_routing=True
+      - build_elevation=True
+
+  # 2. Node.js Backend API (Handles Campus Events and Settings)
+  eaglenav-backend:
+    image: node:18-alpine
+    container_name: eaglenav_api
+    working_dir: /usr/src/app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/usr/src/app
+    command: npm run start:dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
