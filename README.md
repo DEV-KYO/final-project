@@ -6,7 +6,7 @@
 ---
 
 ## Jira Sprint Board
-**Link:** [EagleNav Jira Board](https://calstatela-cs3338-eaglenav.atlassian.net/jira/software/projects/KAN/boards)
+**Link:** [EagleNav Jira Board](https://calstatela-cs3338-eaglenav.atlassian.net/jira/software/projects/KAN/boards/
 
 ## Formal Objective Breakdown
 EagleNav is an accessible, augmented reality campus navigation platform. The primary objectives are:
